@@ -1,9 +1,9 @@
-# VLSI-LAB-EXPERIMENTS
+# SIMULATION AND IMPLEMENTATION OF COMBINATIONAL LOGIC CIRCUITS
 # AIM:
-To simulate and synthesis Logic Gates,Adders and Subtractor using vivado 2023.2.
+To simulate and synthesis ENCODER, DECODER, MULTIPLEXER, DEMULTIPLEXER, MAGNITUDE COMPARATOR using Xilinx ISE.
 
 # APPARATUS REQUIRED:
-vivado 2023.2
+vivado 2023.2.
 
 # PROCEDURE:
 STEP:1 Start the vivado software, Select and Name the New project.
@@ -14,179 +14,219 @@ STEP:3 Select new source in the New Project and select Verilog Module as the Sou
 
 STEP:4 Type the File Name and module name and Click Next and then finish button. Type the code and save it.
 
-STEP:5 Select the run simulation adn then run Behavioral Simulation in the Source Window and click the check syntax.
+STEP:5 Select the run simulation and then run Behavioral Simulation in the Source Window and click the check syntax.
 
 STEP:6 Click the simulation to simulate the program and give the inputs and verify the outputs as per the truth table.
 
-STEP:7 compare the output with truth table. Logic Diagram :
-![image](https://github.com/Ocharan10/VLSI-LAB-EXP-1/assets/162343019/3ecf5062-4c6b-4dd1-85f2-4c809ae995c2)
-# Logic Gates: 
-# Half Adder:
+STEP:7 compare the output with truth table.
 
-![image](https://github.com/Ocharan10/VLSI-LAB-EXP-1/assets/162343019/e981f445-7473-402a-9e65-440072219863)
-# Full adder:
-![image](https://github.com/Ocharan10/VLSI-LAB-EXP-1/assets/162343019/3d462e09-9ef1-4d3e-9e09-dea943b2be2f)
-# Half Subtractor:
-![image](https://github.com/Ocharan10/VLSI-LAB-EXP-1/assets/162343019/a08561ad-54e7-48db-a7bc-39f602e84808)
-# Full Subtractor:
-![image](https://github.com/Ocharan10/VLSI-LAB-EXP-1/assets/162343019/2e419a8b-cd3e-42e3-b3f7-43e396ccea27)
-# 8 Bit Ripple Carry Adder
-![image](https://github.com/Ocharan10/VLSI-LAB-EXP-1/assets/162343019/555ca3fd-dfe0-4767-ac80-724254f0b065)
+# LOGIC DIAGRAM
 
-# VERILOG CODE:
-LOGIC GATES: module logic(a,b,andgate,orgate,xorgate,nandgate,norgate,xnorgate,notgate );
+# ENCODER
 
-input a,b;
+![image](https://github.com/Ocharan10/VLSI-LAB-EXP-2/assets/162343019/13a9dd6f-c38c-4994-ae16-62c507727a6e)
 
-output andgate,orgate,xorgate,nandgate,norgate,xnorgate,notgate;
 
-and(andgate,a,b);
+# DECODER
 
-or(orgate,a,b);
+![image](https://github.com/Ocharan10/VLSI-LAB-EXP-2/assets/162343019/3051001a-0da0-4c5a-a053-e412ee8331c4)
 
-xor(xorgate,a,b);
 
-nand(nandgate,a,b);
+# MULTIPLEXER
 
-nor(norgate,a,b);
+![image](https://github.com/Ocharan10/VLSI-LAB-EXP-2/assets/162343019/d901a333-caca-497e-9f0e-493898e786af)
 
-xnor(xnorgate,a,b);
 
-not(notgate,a);
+# DEMULTIPLEXER
 
-endmodule
+![image](https://github.com/Ocharan10/VLSI-LAB-EXP-2/assets/162343019/8f4df971-c652-4d02-aab9-85902f571391)
 
-# HALF ADDER:
-module HalfAdder(a,b,sum,carry);
 
-input a,b;
+# MAGNITUDE COMPARATOR
 
-output sum,carry;
+![image](https://github.com/Ocharan10/VLSI-LAB-EXP-2/assets/162343019/c6f349af-94dd-4582-9ce8-5cc6e1bf21b4)
 
-xor (sum,a,b);
 
-and (carry,a,b);
+# VERILOG CODE
+# 8-3 ENCODER:
+module encoder(d,a,b,c);
+
+input [7:0]d; output a,b,c;
+
+or (a,d[4],d[5],d[6],d[7]);
+
+or (b,d[2],d[3],d[6],d[7]);
+
+or (c,d[1],d[3],d[5],d[7]);
 
 endmodule
 
-# FULL ADDER:
-module FA(a,b,cin,sum,cout);
+# 3-8 DECODER:
+module decoder(A,E,Y);
 
-input a,b,cin;
+input [1:0]A;
 
-output sum,cout;
+input E;
+
+output [3:0]Y;
+
+assign Y[0]=~A[1]&~A[0]&E;
+
+assign Y[1]=~A[1]&A[0]&E;
+
+assign Y[2]=A[1]&~A[0]&E;
+
+assign Y[3]=A[1]&A[0]&E;
+
+endmodule
+
+module decoder(A,Y);
+
+input[2:0]A;
+
+output[7:0]Y;
+
+decoder_2_4 d1(A[1:0],~A[2],Y[3:0]);
+
+decoder_2_4 d2(A[1:0],~A[2],Y[7:4]);
+
+endmodule
+
+# 8-1 MULTIPLEXER:
+module multi(i,s,y);
+
+input[7:0]i;
+
+input[2:0]s;
+
+output reg y;
+
+always@(*)
+
+begin
+
+case({s[2],s[1],s[0]})
+
+3'b000:y=i[0];
+
+3'b001:y=i[1];
+
+3'b010:y=i[2];
+
+3'b011:y=i[3];
+
+3'b100:y=i[4];
+
+3'b101:y=i[5];
+
+3'b110:y=i[6];
+
+3'b111:y=i[7];
+
+endcase end
+
+endmodule
+
+# 1-8 DEMULTIPLEXER:
+module demultiplexer(d1,d2,d3,d4,d5,d6,d7,d8,i,s0,s1,s2);
+
+input i,s0,s1,s2;
+
+output d1,d2,d3,d4,d5,d6,d7,d8;
 
 wire w1,w2,w3;
 
-xor g1(w1,a,b);
+not g1(w1,s0);
 
-and g2(w2,w1,cin);
+not g2(w2,s1);
 
-and g3(w3,a,b);
+not g3(w3,s2);
 
-xor g4(sum,w1,cin);
+and g4(d1,w1,w2,w3,i);
 
-or g5(cout,w2,w3);
+and g5(d2,w1,w2,s2,i);
 
-endmodule
+and g6(d3,w1,s1,w3,i);
 
-# FULL SUBTRACTOR:
-module full_sub(a,b,bin,diff,borrow);
+and g7(d4,w1,s1,s2,i);
 
-input a,b,bin;
+and g8(d5,s0,w2,w3,i); and g9(d6,s0,w2,s2,i);
 
-output diff,borrow;
+and g10(d7,s0,s1,w3,i);
 
-wire w1,w2,w3;
-
-xor g1(w1,a,bin);
-
-and g2(w2,~a,b);
-
-xor g3(diff,w1,bin);
-
-or g4(borrow,w2,w3);
-
-and g5(w3,~w1,bin);
+and g11(d8,s0,s1,s2,i);
 
 endmodule
 
-# HALF SUBTRACTOR:
-module halfsubtractor(a,b,diff,borrow);
+# 2 BIT MAGNITUDE COMPARATOR :
+module mag_com(a,b,gt,it,eq);
 
-input a,b;
+input [3:0]a,b;
 
-output diff,borrow;
+output reg gt,it,eq;
 
-xor g1(diff,a,b);
+always @(a,b)
 
-and g2(borrow,~a,b);
+begin
 
-endmodule
+if(a>b)
 
-# 8 BIT RIPPLE CARRY ADDER:
-module fa(a,b,c,sum,carry);
+begin
 
-input a,b,c;
+gt = 1'b1;
 
-output sum,carry;
+it = 1'b0;
 
-assign sum = a^b^c;
+eq = 1'b0;
 
-assign carry=(a&b)|(b&c)|(c&a);
+end else if(a<b)
 
-endmodule
+begin
 
-module rca(a,b,cin,sum,cout);
+gt = 1'b0;
 
-input [7:0]a,b; input cin;
+it = 1'b1;
 
-output [7:0]sum;
+eq = 1'b0;
 
-output cout;
+end
 
-wire c1,c2,c3,c4,c5,c6,c7;
+else
 
-fa fa1(a[0],b[0],cin,sum[0],c1);
+begin
 
-fa fa2(a[1],b[1],c1,sum[1],c2);
+gt = 1'b0;
 
-fa fa3(a[2],b[2],c2,sum[2],c3);
+it = 1'b0;
 
-fa fa4(a[3],b[3],c3,sum[3],c4);
+eq = 1'b1;
 
-fa fa5(a[4],b[4],c4,sum[4],c5);
+end
 
-fa fa6(a[5],b[5],c5,sum[5],c6);
-
-fa fa7(a[6],b[6],c6,sum[6],c7);
-
-fa fa8(a[7],b[7],c7,sum[7],cout);
+end
 
 endmodule
 
-# OUTPUT:
-![image](https://github.com/Ocharan10/VLSI-LAB-EXP-1/assets/162343019/f4724cfb-14e1-4949-938b-bc76a5025c8c)
+# OUTPUT WAVEFORM:
+# ENCODER:
+![image](https://github.com/Ocharan10/VLSI-LAB-EXP-2/assets/162343019/2e343ac7-44d3-4b40-9a70-020e78e132ee)
 
 
-# HALF ADDER:
-![image](https://github.com/Ocharan10/VLSI-LAB-EXP-1/assets/162343019/55d58fce-68f3-46ea-b151-51f5f59d03a4)
+# DECODER:
+![image](https://github.com/Ocharan10/VLSI-LAB-EXP-2/assets/162343019/c73aab59-d00f-4398-bab6-2d6d981688fe)
 
 
-# FULL ADDER:
-![image](https://github.com/Ocharan10/VLSI-LAB-EXP-1/assets/162343019/536c46fd-546a-4f96-8988-facee0d48691)
+# MULTIPLEXER:
+![image](https://github.com/Ocharan10/VLSI-LAB-EXP-2/assets/162343019/bd81a8b8-2016-44a3-9d39-da543402fe56)
 
 
-# HALF SUBTRACTOR:
- ![image](https://github.com/Ocharan10/VLSI-LAB-EXP-1/assets/162343019/eb63cb3b-bb45-47ff-a866-6aa9015f31b7)
+# DEMULTIPLEXER:
+![image](https://github.com/Ocharan10/VLSI-LAB-EXP-2/assets/162343019/d4b5367a-5e28-40c5-909f-8594db093088)
 
 
-# FULL SUBTRACTOR:
-![image](https://github.com/Ocharan10/VLSI-LAB-EXP-1/assets/162343019/d2981316-bdbd-4e9f-ba08-d8fd2316727f)
+# 2 BIT MAGNITUDE COMPARATOR:
+![image](https://github.com/Ocharan10/VLSI-LAB-EXP-2/assets/162343019/f2701b18-ae19-40c0-88ea-76251777aa0a)
 
-
-# 8 BIT RIPPLE CARRY ADDER:
-![image](https://github.com/Ocharan10/VLSI-LAB-EXP-1/assets/162343019/ad4cbd44-f52c-48d8-92fb-101600c7abd6)
 
 # RESULT:
-Thus the simulation and synthesis of Logic Gates,Adders and Subtractors using vivado has been sucessfully executed and verified .
+Thus the simulation and synthesis of ENCODER, DECODER, MULTIPLEXER, DEMULTIPLEXER, 2bit MAGNITUDE COMPARATOR using vivado is successfully completed and executed.
